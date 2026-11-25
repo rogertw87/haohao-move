@@ -747,12 +747,10 @@ a:not(.btn):hover { color: var(--ink); }
     var arc = Math.min(done / goal, 1) * RING_C;
     var head = done >= goal ? '本週達標' : '還差 ' + (goal - done) + ' 次';
     var sub = wk.minutes > 0 ? '本週 ' + wk.minutes + ' 分鐘' : '這週還沒開始';
-    var pill = hasSettings() && s.days.length ? daysText(s.days) + ' · <span class="mono">' + s.time + '</span> 提醒' : '設定提醒時間';
     var vids = videoList();
     return '<main class="screen home">' +
       menuHTML() +
       '<h1 class="wordmark">好好運動</h1>' +
-      '<button class="pill" data-act="reminders">' + uiIcon('bell', 16) + '<span>' + pill + '</span></button>' +
       noticeHTML() +
       '<section class="week" aria-label="本週目標">' +
         '<div class="ring"><svg width="96" height="96" viewBox="0 0 96 96" role="img" aria-label="本週完成 ' + done + ' 次，目標 ' + goal + ' 次">' +
@@ -806,6 +804,7 @@ a:not(.btn):hover { color: var(--ink); }
     var standalone = window.matchMedia && window.matchMedia('(display-mode: standalone)').matches;
     return '<div class="menu" id="menu"><button class="menu-btn" data-act="menu" aria-label="選單" aria-expanded="' + state.menu + '">' + uiIcon('more', 20) + '</button>' +
       (state.menu ? '<div class="menu-pop">' +
+        '<button class="menu-item" data-act="reminders">' + uiIcon('bell') + '<span>每週目標與提醒</span></button>' +
         (syncOn ? '<button class="menu-item" data-act="panel" data-v="sync">' + uiIcon('cloud') + '<span>雲端同步</span>' + (stText ? '<span class="menu-st">' + stText + '</span>' : '') + '</button>' : '') +
         '<button class="menu-item" data-act="theme">' + uiIcon(dark ? 'sun' : 'moon') + '<span>' + (dark ? '淺色模式' : '深色模式') + '</span></button>' +
         '<button class="menu-item" data-act="menu-sub" data-v="fsz" aria-expanded="' + (state.menuSub === 'fsz') + '">' + uiIcon('size') + '<span>字體大小</span><span class="menu-st">' + ['標準', '大', '特大'][data.ui.fsz] + '</span></button>' +
