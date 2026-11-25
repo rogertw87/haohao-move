@@ -811,7 +811,6 @@ a:not(.btn):hover { color: var(--ink); }
         '<button class="menu-item" data-act="menu-sub" data-v="fsz" aria-expanded="' + (state.menuSub === 'fsz') + '">' + uiIcon('size') + '<span>字體大小</span><span class="menu-st">' + ['標準', '大', '特大'][data.ui.fsz] + '</span></button>' +
         (state.menuSub === 'fsz' ? '<div class="menu-sub">' + ['標準', '大', '特大'].map(function (l, i) { return '<button class="menu-opt" data-act="fsz" data-v="' + i + '" aria-pressed="' + (data.ui.fsz === i) + '">' + l + '</button>'; }).join('') + '</div>' : '') +
         (standalone ? '' : '<button class="menu-item" data-act="panel" data-v="install">' + uiIcon('phone') + '<span>加到手機桌面</span></button>') +
-        '<a class="menu-item" href="https://haohaobreath.com/">' + uiIcon('wind') + '<span>好好呼吸</span></a>' +
       '</div>' : '') + '</div>';
   }
   function overlayHTML() {
