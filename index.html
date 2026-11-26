@@ -743,22 +743,11 @@ a:not(.btn):hover { color: var(--ink); }
   }
 
   function homeHTML() {
-    var s = data.settings, wk = weekStats(), goal = s.goal, done = wk.count;
-    var arc = Math.min(done / goal, 1) * RING_C;
-    var head = done >= goal ? '本週達標' : '還差 ' + (goal - done) + ' 次';
-    var sub = wk.minutes > 0 ? '本週 ' + wk.minutes + ' 分鐘' : '這週還沒開始';
     var vids = videoList();
     return '<main class="screen home">' +
       menuHTML() +
       '<h1 class="wordmark">好好運動</h1>' +
       noticeHTML() +
-      '<section class="week" aria-label="本週目標">' +
-        '<div class="ring"><svg width="96" height="96" viewBox="0 0 96 96" role="img" aria-label="本週完成 ' + done + ' 次，目標 ' + goal + ' 次">' +
-          '<circle cx="48" cy="48" r="42" class="ring-track"/>' +
-          (arc > 0 ? '<circle cx="48" cy="48" r="42" class="ring-fill" stroke-dasharray="' + arc.toFixed(1) + ' ' + RING_C.toFixed(1) + '"/>' : '') +
-        '</svg><div class="ring-num" aria-hidden="true"><span><span class="n">' + done + '</span><span class="d">/ ' + goal + '</span></span></div></div>' +
-        '<div class="week-text"><span class="label">本週目標 ' + goal + ' 次</span><span class="week-head">' + head + '</span><span class="week-sub">' + sub + '</span></div>' +
-      '</section>' +
       todayHTML(vids) +
       listHTML(vids) +
       (vids.length ? '<button class="btn btn-secondary" data-act="add">加入影片</button>' : '') +
