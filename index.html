@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>好好運動</title>
-<meta name="description" content="好好運動：收藏喜歡的 YouTube 運動影片，每天挑一支跟著做，記錄每週目標，並把提醒加到日曆。">
+<meta name="description" content="好好運動：收藏喜歡的 YouTube 運動影片，每天挑一支跟著做，記錄今天的練習，並把提醒加到日曆。">
 <script>try{var d=JSON.parse(localStorage.getItem('haohao-move'))||{},u=d.ui;if(!u){var o=JSON.parse(localStorage.getItem('haohao-breath-settings'))||{};u={theme:o.theme==='dark'?'dark':'light',fsz:+o.fsz||0}}if(u.theme==='dark')document.documentElement.dataset.theme='dark';var f=[1,1.15,1.3][+u.fsz]||1;document.documentElement.style.setProperty('--fs',f)}catch(e){}</script>
 <link rel="icon" type="image/png" sizes="48x48" href="icons/icon-48.png">
 <link rel="icon" type="image/png" sizes="32x32" href="icons/icon-32.png">
@@ -20,7 +20,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
 /* 好好運動：好好呼吸的姊妹站。同一套顏色、字體和元件；單欄 480px，手機優先。
-   呼吸藍（--breath）只給「會動」的東西：每週目標圈、進度條、開關。 */
+   呼吸藍（--breath）只給「會動」的東西：進度條、開關。 */
 :root {
   --fs: 1;
   --bg-page: #ffffff;
@@ -147,20 +147,6 @@ a:not(.btn):hover { color: var(--ink); }
 .thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
 .thumb.lg { width: 112px; border-radius: 12px; }
 
-/* 每週目標圈 */
-.week { margin-top: 28px; padding: 0 8px; display: flex; align-items: center; gap: 20px; }
-.ring { position: relative; width: 96px; height: 96px; flex: none; }
-.ring svg { display: block; }
-.ring-track { fill: none; stroke: var(--line-strong); stroke-width: 2; }
-.ring-fill { fill: none; stroke: var(--breath); stroke-width: 4; stroke-linecap: round; transform: rotate(-90deg); transform-origin: 48px 48px; transition: stroke-dasharray 1s linear; }
-.ring-num { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; }
-.ring-num > span { display: flex; align-items: baseline; gap: 4px; font-family: var(--font-mono); }
-.ring-num .n { font-size: 28px; font-weight: 300; line-height: 1; }
-.ring-num .d { font-size: 15px; color: var(--text-2); }
-.week-text { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
-.week-head { font-size: calc(22px * var(--fs)); font-weight: 500; line-height: 1.3; }
-.week-sub { font-size: calc(14px * var(--fs)); line-height: 1.5; color: var(--text-2); }
-
 /* 今天 */
 .today { margin: 28px 0 32px; }
 .today-top { display: flex; justify-content: space-between; align-items: center; gap: 12px; }
@@ -248,12 +234,6 @@ a:not(.btn):hover { color: var(--ink); }
 .done-label { font-size: calc(13px * var(--fs)); letter-spacing: .3em; text-indent: .3em; color: var(--brand); }
 .done-val { font: 300 56px/1 var(--font-mono); }
 .soft.wide { align-self: stretch; text-align: left; }
-.dots { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); border-top: 1px solid var(--line); padding-top: 12px; }
-.dot-col { display: flex; flex-direction: column; align-items: center; gap: 8px; }
-.dot-l { font-size: calc(12px * var(--fs)); line-height: 1.6; color: var(--text-2); }
-.dot-l.today { color: var(--ink); font-weight: 500; }
-.dot { width: 10px; height: 10px; box-sizing: border-box; border-radius: 50%; border: 2px solid var(--line-strong); }
-.dot.on { background: var(--ink); border-color: var(--ink); }
 
 /* 底部面板 */
 .scrim { position: fixed; inset: 0; z-index: 5; background: var(--scrim); display: flex; align-items: flex-end; justify-content: center; }
@@ -304,7 +284,6 @@ a:not(.btn):hover { color: var(--ink); }
   var TYPE_KEYS = TYPES.map(function (t) { return t[0]; });
   var DAY_LABELS = ['一', '二', '三', '四', '五', '六', '日'];
   var BYDAY = ['MO', 'TU', 'WE', 'TH', 'FR', 'SA', 'SU'];
-  var RING_C = 2 * Math.PI * 42;
   var UI = {
     bell: ['M6 16.5V11a6 6 0 0 1 12 0v5.5l1.5 2.5h-15L6 16.5ZM10 21.5h4', 1.8],
     play: ['M8.5 5.5v13l10.5-6.5-10.5-6.5Z', 1.8],
@@ -498,17 +477,6 @@ a:not(.btn):hover { color: var(--ink); }
   function rotationList() { return videoList().filter(function (v) { return v.inRotation; }); }
   function entries() {
     return Object.keys(data.log).map(function (k) { return data.log[k]; }).sort(function (a, b) { return a.at - b.at; });
-  }
-  function weekDates() {
-    var now = new Date(), s = new Date(now.getFullYear(), now.getMonth(), now.getDate() - ((now.getDay() + 6) % 7)), out = [];
-    for (var i = 0; i < 7; i++) out.push(ymd(new Date(s.getFullYear(), s.getMonth(), s.getDate() + i)));
-    return out;
-  }
-  function weekStats() {
-    var days = weekDates(), doneDays = {};
-    var es = entries().filter(function (e) { return e.date >= days[0] && e.date <= days[6]; });
-    es.forEach(function (e) { doneDays[e.date] = true; });
-    return { count: es.length, minutes: es.reduce(function (a, e) { return a + e.minutes; }, 0), doneDays: doneDays, days: days };
   }
   function todayEntries() { var t = ymd(new Date()); return entries().filter(function (e) { return e.date === t; }); }
   function todayPick() {
@@ -793,7 +761,7 @@ a:not(.btn):hover { color: var(--ink); }
     var standalone = window.matchMedia && window.matchMedia('(display-mode: standalone)').matches;
     return '<div class="menu" id="menu"><button class="menu-btn" data-act="menu" aria-label="選單" aria-expanded="' + state.menu + '">' + uiIcon('more', 20) + '</button>' +
       (state.menu ? '<div class="menu-pop">' +
-        '<button class="menu-item" data-act="reminders">' + uiIcon('bell') + '<span>每週目標與提醒</span></button>' +
+        '<button class="menu-item" data-act="reminders">' + uiIcon('bell') + '<span>提醒</span></button>' +
         (syncOn ? '<button class="menu-item" data-act="panel" data-v="sync">' + uiIcon('cloud') + '<span>雲端同步</span>' + (stText ? '<span class="menu-st">' + stText + '</span>' : '') + '</button>' : '') +
         '<button class="menu-item" data-act="theme">' + uiIcon(dark ? 'sun' : 'moon') + '<span>' + (dark ? '淺色模式' : '深色模式') + '</span></button>' +
         '<button class="menu-item" data-act="menu-sub" data-v="fsz" aria-expanded="' + (state.menuSub === 'fsz') + '">' + uiIcon('size') + '<span>字體大小</span><span class="menu-st">' + ['標準', '大', '特大'][data.ui.fsz] + '</span></button>' +
@@ -883,18 +851,15 @@ a:not(.btn):hover { color: var(--ink); }
   }
 
   function doneHTML() {
-    var p = state.lastDone, wk = weekStats(), s = data.settings, today = ymd(new Date());
+    var p = state.lastDone, te = todayEntries(), s = data.settings;
+    var mins = te.reduce(function (a, e) { return a + e.minutes; }, 0);
     var next = hasSettings() ? nextOccurrence(s.days, s.time) : null;
-    var v = p ? getVideo(p.videoId) : null, doneNames = [];
-    var dots = wk.days.map(function (d, i) {
-      if (wk.doneDays[d]) doneNames.push('週' + DAY_LABELS[i]);
-      return '<div class="dot-col"><span class="dot-l' + (d === today ? ' today' : '') + '">' + DAY_LABELS[i] + '</span><span class="dot' + (wk.doneDays[d] ? ' on' : '') + '"></span></div>';
-    }).join('');
+    var v = p ? getVideo(p.videoId) : null;
     return '<main class="screen task">' + noticeHTML() + '<div class="done-center">' +
       '<div class="hero"><span class="done-label">完成</span><span class="done-val">' + (p ? p.minutes + ':00' : '') + '</span><span class="desc">' + (p ? esc(p.title) : '') + '</span></div>' +
       '<p class="desc">有動就好，不需要硬撐。</p>' +
-      '<section class="soft wide"><div class="sum-top"><span class="eyebrow">本週</span><div class="sum-line"><span class="today-title">' + wk.minutes + ' 分鐘</span><span class="sum-count">完成 ' + wk.count + ' 次 · 目標 ' + s.goal + ' 次</span></div></div>' +
-        '<div class="dots" role="img" aria-label="本週已完成：' + (doneNames.length ? doneNames.join('、') : '還沒有') + '">' + dots + '</div></section>' +
+      '<section class="soft wide"><div class="sum-top"><span class="eyebrow">今天</span><div class="sum-line"><span class="today-title">' + mins + ' 分鐘</span><span class="sum-count">完成 ' + te.length + ' 次</span></div></div>' +
+        '<div class="sum-rows">' + te.map(function (e) { return '<div class="sum-row"><span>' + esc(e.title) + '</span><span>' + e.minutes + ' 分鐘</span></div>'; }).join('') + '</div></section>' +
       (next ? '<p class="desc">下次提醒 · ' + whenLabel(next) + '</p>' : '') +
       '</div><div class="actions">' +
       (v ? startBtn(v, 'btn btn-primary', '再練一次') : '') +
@@ -937,7 +902,7 @@ a:not(.btn):hover { color: var(--ink); }
 
   function remDirty() {
     var r = state.rem, s = data.settings;
-    return !hasSettings() || r.goal !== s.goal || r.time !== s.time || r.order !== s.order || r.days.join() !== s.days.join();
+    return !hasSettings() || r.time !== s.time || r.order !== s.order || r.days.join() !== s.days.join();
   }
   function remHTML() {
     var r = state.rem, dirty = remDirty();
@@ -947,10 +912,6 @@ a:not(.btn):hover { color: var(--ink); }
       '<p class="desc lead">選好運動的日子和時間，再加到日曆，時間到手機會跳通知。</p>' +
       noticeHTML() +
       '<div class="sections">' +
-        '<div class="sec"><div class="label-row"><span class="label">每週目標</span></div>' +
-          '<div class="card"><div class="stepper"><span>每週次數</span><div class="step-ctl">' +
-            '<button class="step-btn" data-act="goal-dec" aria-label="減少一次">−</button><span class="step-val">' + r.goal + ' 次</span><button class="step-btn" data-act="goal-inc" aria-label="增加一次">+</button>' +
-          '</div></div></div></div>' +
         '<div class="sec"><div class="label-row"><span class="label" id="days-l">提醒日</span><span class="label-val">' + (r.days.length === 7 ? '每天' : '每週 ' + r.days.length + ' 天') + '</span></div>' +
           '<div class="opts days" role="group" aria-labelledby="days-l">' + DAY_LABELS.map(function (l, i) {
             return '<button class="opt" data-act="day" data-v="' + (i + 1) + '" aria-pressed="' + (r.days.indexOf(i + 1) >= 0) + '" aria-label="星期' + l + '">' + l + '</button>';
@@ -1187,7 +1148,7 @@ a:not(.btn):hover { color: var(--ink); }
   // ---------- 提醒設定 ----------
   function openRem() {
     var s = data.settings;
-    state.rem = { goal: s.goal, days: s.days.slice(), time: s.time, order: s.order };
+    state.rem = { days: s.days.slice(), time: s.time, order: s.order };
     state.remSaved = false;
     go('reminders');
   }
@@ -1243,8 +1204,6 @@ a:not(.btn):hover { color: var(--ink); }
       case 'type': f.type = TYPE_KEYS.indexOf(val) >= 0 ? val : 'other'; renderFormControls(); break;
       case 'rot': f.inRotation = !f.inRotation; renderFormControls(); break;
       case 'save-video': saveVideo(); break;
-      case 'goal-dec': r.goal = Math.max(1, r.goal - 1); state.remSaved = false; mount(); break;
-      case 'goal-inc': r.goal = Math.min(7, r.goal + 1); state.remSaved = false; mount(); break;
       case 'day':
         var n = Number(val), i = r.days.indexOf(n);
         if (i >= 0) r.days.splice(i, 1); else r.days.push(n);
@@ -1254,7 +1213,7 @@ a:not(.btn):hover { color: var(--ink); }
       case 'time-inc': r.time = shiftTime(r.time, 1); state.remSaved = false; mount(); break;
       case 'order': r.order = val === 'random' ? 'random' : 'rotate'; state.remSaved = false; mount(); break;
       case 'save-rem':
-        Object.assign(data.settings, { goal: r.goal, days: r.days.slice(), time: r.time, order: r.order, at: Date.now() });
+        Object.assign(data.settings, { days: r.days.slice(), time: r.time, order: r.order, at: Date.now() });
         changed();
         state.remSaved = true; state.skip = 0; mount();
         break;
